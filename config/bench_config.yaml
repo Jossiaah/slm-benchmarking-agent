@@ -1,0 +1,16 @@
+benchmarking:
+  warmup_runs: 1
+  iterations: 3
+  timeout_seconds: 30
+
+test_models:
+  - "llama3:8b"
+  - "phi3:3.8b"
+
+prompts:
+  - id: "json_extraction"
+    text: "Extract entities from this text as valid JSON containing 'name' and 'age': 'John is a 29 year old ML engineer.'"
+    expected_schema: "json"
+  - id: "code_generation"
+    text: "Write a high-performance Python function to reverse a string. Return ONLY raw code, no markdown formatting."
+    expected_schema: "raw_text"
