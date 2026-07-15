@@ -1,0 +1,47 @@
+name: Periodic SLM Agent Diagnostics
+
+on:
+  schedule:
+    # Triggers the workflow every 6 hours (At minute 0 of hours 0, 6, 12, 18)
+    - cron: '0 */6 * * *'
+  workflow_dispatch: # Allows you to also trigger this manually with a button click on GitHub
+
+jobs:
+  run-diagnostics:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out repository code
+      uses: actions/checkout@v4
+
+    - name: Set up Python Environment
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+        cache: 'pip'
+
+    - name: Install Project Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run Model Integrity and Evaluation Tests
+      run: |
+        # This will execute your unit tests to verify the core agent logic
+        python -m pytest tests/
+
+    - name: Generate Agent Execution Snapshot
+      run: |
+        # Verifies the entry point launcher script boots up cleanly
+        python run_benchmarks.py
+        echo "Agent validation run completed successfully on $(date)" >> agent_heartbeat.log
+
+    - name: Commit and Push Heartbeat Log
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "41898282+github-actions[bot]@://github.com"
+        git add agent_heartbeat.log
+        
+        # Only commit and push if there are actual updates to register
+        git diff-index --quiet HEAD || git commit -m "chore: automated agent cron heartbeat [skip ci]"
+        git push
