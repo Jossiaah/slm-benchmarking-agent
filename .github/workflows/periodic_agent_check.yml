@@ -41,12 +41,12 @@ jobs:
         echo "Agent validation run completed successfully on $(date)" >> agent_heartbeat.log
 
     - name: Commit and Push Heartbeat Log
+      env:
+        GRID_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
       run: |
-        # Fixed the malformed git-bot string signature securely here
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --global user.name "Jossiaah"
+        git config --global user.email "josiahcastillo19@gmail.com"
         git add agent_heartbeat.log
         
-        # Authenticates the push using your secure secret token to light up the contribution grid
         git diff-index --quiet HEAD || git commit -m "chore: automated agent cron heartbeat [skip ci]"
-        git push https://Jossiaah:${{ secrets.MY_GITHUB_TOKEN }}@://github.com main
+        git push https://Jossiaah:${GRID_TOKEN}@://github.com main
