@@ -49,4 +49,4 @@ jobs:
         git add agent_heartbeat.log
         
         git diff-index --quiet HEAD || git commit -m "chore: automated agent cron heartbeat [skip ci]"
-        git push https://Jossiaah:${GRID_TOKEN}@://github.com main
+        git push https://Jossiaah:${GRID_TOKEN}@://github.com/slm-benchmarking-agent main
